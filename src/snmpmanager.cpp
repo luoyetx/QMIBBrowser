@@ -131,7 +131,7 @@ Status SnmpManager::handleOperationSet(Request *request)
     status = snmp.set(pdu, *target);
     if (status == SNMP_CLASS_SUCCESS) {
         /*SetRequest SUCCESS*/
-        //TODO
+        QMessageBox::about(0, "Info", "RequestSet Success");
     }
     else {
         /*SetRequest FAILED*/
