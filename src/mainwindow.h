@@ -45,7 +45,7 @@ private:
     Status setUpRequestSet(Request *request);
 
     /*Check the Request Valid or Not*/
-    Status checkRequest(Operation operation, Request *request);
+    Status checkRequest(Request *request);
 
 public slots:
     /*connection with AdvancedOptionDialog*/

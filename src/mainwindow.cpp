@@ -1,6 +1,7 @@
 #include <QDebug>
 #include <QVariant>
 #include <QLabel>
+#include <QMessageBox>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -171,7 +172,7 @@ Status MainWindow::setUpRequest(Operation operation, Request *request)
         break;
     }
     if (status == Status_SUCCESS)
-        status = checkRequest(operation, request);
+        status = checkRequest(request);
     qDebug() << "##################Request Infomation####################";
     qDebug() << "Request address:       " << request->address.get_printable();
     qDebug() << "Request data(oid):     " << request->data.get_printable_oid();
@@ -234,9 +235,36 @@ Status MainWindow::setUpRequestSet(Request *request)
 }
 
 /*Check the Request Valid or Not*/
-Status MainWindow::checkRequest(Operation operation, Request *request)
+Status MainWindow::checkRequest(Request *request)
 {
-    //TODO
+    /*Check address*/
+    if (!request->address.valid()) {
+        /*error*/
+        QMessageBox::warning(this, "Warning", "Wrong IP Address");
+        return Status_FAILED;
+    }
+    /*Check data*/
+    switch (request->operation) {
+    case OperationGet:
+    case OperationGetNext:
+        /*directly set null*/
+        request->data.set_null();
+        break;
+    case OperationSet:
+        /*value shoudn't be null*/
+        if (!request->data.valid()) {
+            QMessageBox::warning(this, "Warning", "Value Should be set");
+            return Status_FAILED;
+        }
+        break;
+    default:
+        return Status_FAILED;
+        break;
+    }
+    /*Check version*/
+    /*Check retry*/
+    /*Check timeout*/
+    /*Check community*/
     return Status_SUCCESS;
 }
 
@@ -297,7 +325,7 @@ void MainWindow::onGoPushButtonClicked()
     Status status;
     status = setUpRequest(operation, request);
     if (status == Status_SUCCESS) {
-        /*Set Request Correctly and Prepare to Send Request*/
+        /*Setup Request Correctly and Prepare to Send Request*/
         status = snmpManager->handleOperation(request);
         if (status == Status_SUCCESS) {
             /*Handle Request Successfully*/
@@ -324,8 +352,8 @@ void MainWindow::onGoPushButtonClicked()
         }
     }
     else {
-        /*Set Request Error*/
-        qDebug() << "Set Request Error";
+        /*Setup Request Error*/
+        qDebug() << "Setup Request Error";
     }
 }
 
