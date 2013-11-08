@@ -115,6 +115,7 @@ void MainWindow::initialConnections()
     connect(ui->OidLineEdit, SIGNAL(textEdited(QString)), this, SLOT(onOidLineEditChanged(QString)));
     connect(ui->advancedOptionPushButton, SIGNAL(clicked()), this, SLOT(onAdvancedOptionPushButtonClicked()));
     connect(ui->goPushButton, SIGNAL(clicked()), this, SLOT(onGoPushButtonClicked()));
+    connect(ui->actionClear, SIGNAL(triggered()), this, SLOT(resetResultTableWidget()));
     //TODO
 }
 
@@ -330,5 +331,6 @@ void MainWindow::onGoPushButtonClicked()
 
 void MainWindow::resetResultTableWidget()
 {
-    //TODO
+    ui->resultTableWidget->clearContents();
+    ui->resultTableWidget->setRowCount(0);
 }
