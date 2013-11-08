@@ -1,0 +1,1 @@
+These two libs are compiled by VC10 32bit
