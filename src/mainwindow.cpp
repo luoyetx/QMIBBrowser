@@ -111,8 +111,8 @@ void MainWindow::initialConnections()
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));
     connect(ui->actionAbout_Qt, SIGNAL(triggered()), QApplication::instance(), SLOT(aboutQt()));
     /*Initialize Connections between Widgets*/
-    connect(ui->IPLineEdit, SIGNAL(textEdited(QString)), this, SLOT(onIPLineEditChanged(QString)));
-    connect(ui->OidLineEdit, SIGNAL(textEdited(QString)), this, SLOT(onOidLineEditChanged(QString)));
+    connect(ui->IPLineEdit, SIGNAL(textChanged(QString)), this, SLOT(onIPLineEditChanged(QString)));
+    connect(ui->OidLineEdit, SIGNAL(textChanged(QString)), this, SLOT(onOidLineEditChanged(QString)));
     connect(ui->advancedOptionPushButton, SIGNAL(clicked()), this, SLOT(onAdvancedOptionPushButtonClicked()));
     connect(ui->goPushButton, SIGNAL(clicked()), this, SLOT(onGoPushButtonClicked()));
     connect(ui->actionClear, SIGNAL(triggered()), this, SLOT(resetResultTableWidget()));
