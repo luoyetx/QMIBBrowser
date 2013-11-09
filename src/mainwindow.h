@@ -44,6 +44,9 @@ private:
     Status setUpRequestGetNext(Request *request);
     Status setUpRequestSet(Request *request);
 
+    /*Handle Request*/
+    void handleRequest(Operation operation, Request *request);
+
     /*Check the Request Valid or Not*/
     Status checkRequest(Request *request);
 

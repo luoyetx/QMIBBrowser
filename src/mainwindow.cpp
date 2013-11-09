@@ -268,6 +268,43 @@ Status MainWindow::checkRequest(Request *request)
     return Status_SUCCESS;
 }
 
+void MainWindow::handleRequest(Operation operation, Request *request)
+{
+    Status status;
+    status = setUpRequest(operation, request);
+    if (status == Status_SUCCESS) {
+        /*Setup Request Correctly and Prepare to Send Request*/
+        status = snmpManager->handleOperation(request);
+        if (status == Status_SUCCESS) {
+            /*Handle Request Successfully*/
+            if (request->operation != OperationSet) {
+                /*Update ResultTableWidget*/
+                qDebug() << ">>>>>>>>>>>>>Insert Items to ResultTableWidget<<<<<<<<<<<";
+                int row = ui->resultTableWidget->rowCount();
+                ui->resultTableWidget->insertRow(row);
+                //TODO, here just for debug
+                QLabel *itemOid = new QLabel(request->data.get_printable_oid(), ui->resultTableWidget);
+                QLabel *itemValue = new QLabel(request->data.get_printable_value(), ui->resultTableWidget);
+                QLabel *itemType = new QLabel("INTEGER", ui->resultTableWidget);
+                itemValue->setToolTip(itemValue->text());
+                ui->resultTableWidget->setCellWidget(row, 0, itemOid);
+                ui->resultTableWidget->setCellWidget(row, 1, itemType);
+                ui->resultTableWidget->setCellWidget(row, 2, itemValue);
+            }
+            /*flesh Oid (Needed By OperationGetNext), but I'll flesh each time*/
+            ui->OidLineEdit->setText(request->data.get_oid().get_printable());
+        }
+        else {
+            /*Handle Reuqest Error*/
+            qDebug() << "Handle Requeset Error";
+        }
+    }
+    else {
+        /*Setup Request Error*/
+        qDebug() << "Setup Request Error";
+    }
+}
+
 /*Public Slots*/
 
 /*Update RequestInfo with a given RequestInfo
@@ -322,40 +359,12 @@ void MainWindow::onGoPushButtonClicked()
     int index = ui->operationComboBox->currentIndex();
     bool ok;
     Operation operation = ui->operationComboBox->itemData(index).toInt(&ok);
-    Status status;
+    if (!ok) {
+        QMessageBox::warning(this, "Waring", "Wrong Request Method");
+        return;
+    }
     Request *request = new Request;
-    status = setUpRequest(operation, request);
-    if (status == Status_SUCCESS) {
-        /*Setup Request Correctly and Prepare to Send Request*/
-        status = snmpManager->handleOperation(request);
-        if (status == Status_SUCCESS) {
-            /*Handle Request Successfully*/
-            if (request->operation != OperationSet) {
-                /*Update ResultTableWidget*/
-                qDebug() << ">>>>>>>>>>>>>Insert Items to ResultTableWidget<<<<<<<<<<<";
-                int row = ui->resultTableWidget->rowCount();
-                ui->resultTableWidget->insertRow(row);
-                //TODO, here just for debug
-                QLabel *itemOid = new QLabel(request->data.get_printable_oid(), ui->resultTableWidget);
-                QLabel *itemValue = new QLabel(request->data.get_printable_value(), ui->resultTableWidget);
-                QLabel *itemType = new QLabel("INTEGER", ui->resultTableWidget);
-                itemValue->setToolTip(itemValue->text());
-                ui->resultTableWidget->setCellWidget(row, 0, itemOid);
-                ui->resultTableWidget->setCellWidget(row, 1, itemType);
-                ui->resultTableWidget->setCellWidget(row, 2, itemValue);
-            }
-            /*flesh Oid (Needed By OperationGetNext), but I'll flesh each time*/
-            ui->OidLineEdit->setText(request->data.get_oid().get_printable());
-        }
-        else {
-            /*Handle Reuqest Error*/
-            qDebug() << "Handle Requeset Error";
-        }
-    }
-    else {
-        /*Setup Request Error*/
-        qDebug() << "Setup Request Error";
-    }
+    handleRequest(operation, request);
     delete request;
 }
 
