@@ -25,7 +25,7 @@ private:
     Ui::MainWindow *ui;
     SnmpManager *snmpManager;
     RequestInfo *requestInfo;
-    Request *request;
+    //Request *request;
 
     /*initial Class*/
     void initialRequestInfo(RequestInfo *requestInfo);

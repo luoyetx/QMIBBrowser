@@ -12,7 +12,7 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow), snmpManager(new SnmpManager),
-    requestInfo(new RequestInfo), request(new Request)
+    requestInfo(new RequestInfo)//, request(new Request)
 {
     ui->setupUi(this);
     initialWidgets();
@@ -25,7 +25,7 @@ MainWindow::~MainWindow()
     delete ui;
     delete snmpManager;
     delete requestInfo;
-    delete request;
+    //delete request;
 }
 
 void MainWindow::initialRequestInfo(RequestInfo *requestInfo)
@@ -323,6 +323,7 @@ void MainWindow::onGoPushButtonClicked()
     bool ok;
     Operation operation = ui->operationComboBox->itemData(index).toInt(&ok);
     Status status;
+    Request *request = new Request;
     status = setUpRequest(operation, request);
     if (status == Status_SUCCESS) {
         /*Setup Request Correctly and Prepare to Send Request*/
@@ -355,8 +356,10 @@ void MainWindow::onGoPushButtonClicked()
         /*Setup Request Error*/
         qDebug() << "Setup Request Error";
     }
+    delete request;
 }
 
+/*Reset ResultTableWidget*/
 void MainWindow::resetResultTableWidget()
 {
     ui->resultTableWidget->clearContents();
