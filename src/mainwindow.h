@@ -61,6 +61,8 @@ private slots:
     void onGoPushButtonClicked();
     /*Reset ResultTableWidget*/
     void resetResultTableWidget();
+    /*Open Dialog to load MIB txt*/
+    void loadMIB();
 
 };
 

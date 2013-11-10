@@ -2,6 +2,7 @@
 #include <QVariant>
 #include <QLabel>
 #include <QMessageBox>
+#include <QFileDialog>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -116,7 +117,9 @@ void MainWindow::initialConnections()
     connect(ui->OidLineEdit, SIGNAL(textChanged(QString)), this, SLOT(onOidLineEditChanged(QString)));
     connect(ui->advancedOptionPushButton, SIGNAL(clicked()), this, SLOT(onAdvancedOptionPushButtonClicked()));
     connect(ui->goPushButton, SIGNAL(clicked()), this, SLOT(onGoPushButtonClicked()));
+    /*connect actions*/
     connect(ui->actionClear, SIGNAL(triggered()), this, SLOT(resetResultTableWidget()));
+    connect(ui->actionLoad_MIB, SIGNAL(triggered()), this, SLOT(loadMIB()));
     //TODO
 }
 
@@ -251,7 +254,7 @@ Status MainWindow::checkRequest(Request *request)
         request->data.set_null();
         break;
     case OperationSet:
-        /*value shoudn't be null*/
+        /*value shoudn't be null(including OID)*/
         if (!request->data.valid()) {
             QMessageBox::warning(this, "Warning", "Value Should be set");
             return Status_FAILED;
@@ -373,4 +376,12 @@ void MainWindow::resetResultTableWidget()
 {
     ui->resultTableWidget->clearContents();
     ui->resultTableWidget->setRowCount(0);
+}
+
+/*Open Dialog to load MIB txt*/
+void MainWindow::loadMIB()
+{
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "", tr("File (*.txt)"));
+    qDebug() << ">>>>>>>>>>>Prepare to load file: " << fileName << "<<<<<<<<<";
+    snmpManager->loadMIB(fileName, ui->MIBTreeWidget);
 }
