@@ -16,14 +16,16 @@ HEADERS += \
     src/snmpmanager.h \
     src/advancedoptiondialog.h \
     src/common.h \
-    src/setrequestdialog.h
+    src/setrequestdialog.h \
+    src/mibtree.h
 
 SOURCES += \
     src/mainwindow.cpp \
     src/main.cpp \
     src/snmpmanager.cpp \
     src/advancedoptiondialog.cpp \
-    src/setrequestdialog.cpp
+    src/setrequestdialog.cpp \
+    src/mibtree.cpp
 
 INCLUDEPATH += $$PWD/includes
 

@@ -7,6 +7,7 @@
 
 #include "common.h"
 #include "snmpmanager.h"
+#include "mibtree.h"
 
 namespace Ui {
 class MainWindow;
@@ -25,6 +26,7 @@ private:
     Ui::MainWindow *ui;
     SnmpManager *snmpManager;
     RequestInfo *requestInfo;
+    MIBTree *mibTree;
     //Request *request;
 
     /*initial Class*/

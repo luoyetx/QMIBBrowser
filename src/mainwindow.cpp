@@ -19,13 +19,15 @@ MainWindow::MainWindow(QWidget *parent) :
     initialWidgets();
     initialConnections();
     initialRequestInfo(requestInfo);
+    updateWidgetValue(requestInfo);
 }
 
 MainWindow::~MainWindow()
 {
-    delete ui;
+    delete mibTree;
     delete snmpManager;
     delete requestInfo;
+    delete ui;
     //delete request;
 }
 
@@ -38,7 +40,6 @@ void MainWindow::initialRequestInfo(RequestInfo *requestInfo)
     requestInfo->retry = 1;
     requestInfo->timeout = 100;
     requestInfo->version = version1;
-    updateWidgetValue(requestInfo);
 }
 
 void MainWindow::initialWidgets()
@@ -57,6 +58,9 @@ void MainWindow::initialWidgets()
 void MainWindow::initialMIBTreeWidget(QTreeWidget *MIBTreeWidget)
 {
     //TODO
+    mibTree = new MIBTree(ui->MIBTreeWidget);
+    QString fileName = "mibs/mib2.txt";
+    mibTree->loadMIB(fileName);
 }
 
 void MainWindow::initialMIBTableWidget(QTableWidget *MIBTableWidget)
@@ -383,5 +387,10 @@ void MainWindow::loadMIB()
 {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "", tr("File (*.txt)"));
     qDebug() << ">>>>>>>>>>>Prepare to load file: " << fileName << "<<<<<<<<<";
-    snmpManager->loadMIB(fileName, ui->MIBTreeWidget);
+    if (mibTree->loadMIB(fileName)==Status_SUCCESS) {
+        //SUCCESS LOAD
+    }
+    else {
+        //FAILED
+    }
 }

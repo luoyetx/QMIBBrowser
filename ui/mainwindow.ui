@@ -182,7 +182,14 @@
     </property>
     <addaction name="actionAbout_Qt"/>
    </widget>
+   <widget class="QMenu" name="menuEdit_E">
+    <property name="title">
+     <string>Edit(&amp;E)</string>
+    </property>
+    <addaction name="actionClear"/>
+   </widget>
    <addaction name="menu_File"/>
+   <addaction name="menuEdit_E"/>
    <addaction name="menuAbout_A"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
@@ -212,6 +219,11 @@
   <action name="actionRegister_Oid">
    <property name="text">
     <string>Register Oid</string>
+   </property>
+  </action>
+  <action name="actionClear">
+   <property name="text">
+    <string>Clear</string>
    </property>
   </action>
  </widget>
