@@ -10,6 +10,7 @@ MIBTree::MIBTree(QTreeWidget *tree)
     root = new QTreeWidgetItem(tree);
     MIBNode *rootNode = newNode();
     rootNode->name = "mgmt";
+    rootNode->oid = "1.3.6.1.2";
 
     root->setData(0, Qt::UserRole, QVariant::fromValue(rootNode));
     root->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
@@ -32,10 +33,6 @@ void MIBTree::destroyTree(QTreeWidgetItem *node)
 /*Add node BY ParentName NodeName Position*/
 void MIBTree::addNode(QString &parentName, QString &nodeName, QString &pos, MIBNode *node=NULL)
 {
-    if (node==NULL) {
-        node = newNode();
-        node->name = nodeName;
-    }
     //find parent node
     QTreeWidgetItem *parent;
     parent = findNodeItemByName(root, parentName);
@@ -44,12 +41,18 @@ void MIBTree::addNode(QString &parentName, QString &nodeName, QString &pos, MIBN
         //Do nothing
         return;
     }
-    bool ok;
+    MIBNode *parentNode = parent->data(0, Qt::UserRole).value<MIBNode*>();
+    if (node==NULL) {
+        node = newNode();
+        node->name = nodeName;
+    }
+    //set oid
+    node->oid = parentNode->oid + "." + pos;
     QTreeWidgetItem *nodeItem = new QTreeWidgetItem(parent);
     parent->addChild(nodeItem);
     nodeItem->setData(0, Qt::UserRole, QVariant::fromValue(node));
     nodeItem->setText(0, node->name);
-    qDebug() << parentName << "--->" << nodeName << "--->" << pos << "installed";
+    qDebug() << parentName << "--->" << nodeName << "--->" << node->oid << "installed";
     qDebug() << nodeItem->childCount();
     //TODO
 }
@@ -279,7 +282,22 @@ Status MIBTree::loadMIB(QString fileName)
             }
         }
     }
+    file.close();
+    correctTree(root, false);
     return Status_SUCCESS;
+}
+
+void MIBTree::correctTree(QTreeWidgetItem *node, bool flag)
+/*flag=true if parent node has index value*/
+{
+    if (flag==false && node->childCount()==0) {
+        node->data(0,Qt::UserRole).value<MIBNode*>()->oidplus = ".0";
+        return;
+    }
+    for (int i=0; i<node->childCount(); i++)
+        if (node->data(0, Qt::UserRole).value<MIBNode*>()->index=="")
+            correctTree(node->child(i), false);
+        else correctTree(node->child(i), true);
 }
 
 MIBNode* MIBTree::newNode()
@@ -291,24 +309,30 @@ MIBNode* MIBTree::newNode()
     node->status = "";
     node->index = "";
     node->description = "";
+    node->oidplus = "";
     return node;
 }
 
-MIBNode* MIBTree::getNodeByName(QString name)
+MIBNode* MIBTree::getNodeByName(QString &name)
 {
-    return NULL;
+    QTreeWidgetItem *rv;
+    rv = findNodeItemByName(root, name);
+    if (rv!=NULL) return rv->data(0, Qt::UserRole).value<MIBNode*>();
+    else return NULL;
 }
 
-MIBNode* MIBTree::getNodeByOid(QString oid)
+MIBNode* MIBTree::getNodeByOid(QString &oid)
 {
-    return NULL;
+    QTreeWidgetItem *rv;
+    rv = findNodeItemByOid(root, oid);
+    if (rv!=NULL) return rv->data(0, Qt::UserRole).value<MIBNode*>();
+    else return NULL;
 }
 
-QTreeWidgetItem* MIBTree::findNodeItemByName(QTreeWidgetItem *node, QString name)
+QTreeWidgetItem* MIBTree::findNodeItemByName(QTreeWidgetItem *node, QString &name)
+/*DFS*/
 {
-    QVariant rv = node->data(0, Qt::UserRole);
-    MIBNode *rrv = rv.value<MIBNode*>();
-    if (rrv->name==name)
+    if (node->data(0, Qt::UserRole).value<MIBNode*>()->name == name)
         //find node
         return node;
     else {
@@ -316,6 +340,24 @@ QTreeWidgetItem* MIBTree::findNodeItemByName(QTreeWidgetItem *node, QString name
         QTreeWidgetItem *temp;
         for (int i=0; i<node->childCount(); i++) {
             temp = findNodeItemByName(node->child(i), name);
+            if (temp != NULL)
+                return temp;
+        }
+    }
+    return NULL;
+}
+
+QTreeWidgetItem* MIBTree::findNodeItemByOid(QTreeWidgetItem *node, QString &oid)
+/*DFS*/
+{
+    if (node->data(0, Qt::UserRole).value<MIBNode*>()->oid == oid) {
+        //find node
+        return node;
+    }
+    else {
+        QTreeWidgetItem *temp;
+        for (int i=0; i<node->childCount(); i++) {
+            temp = findNodeItemByOid(node->child(i), oid);
             if (temp != NULL)
                 return temp;
         }

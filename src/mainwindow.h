@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QTreeWidget>
 #include <QTableWidget>
+#include <QLabel>
 
 #include "common.h"
 #include "snmpmanager.h"
@@ -27,6 +28,14 @@ private:
     SnmpManager *snmpManager;
     RequestInfo *requestInfo;
     MIBTree *mibTree;
+    //MIBTable items
+    QLabel *tableItemName;
+    QLabel *tableItemOid;
+    QLabel *tableItemSyntax;
+    QLabel *tableItemAccess;
+    QLabel *tableItemStatus;
+    QLabel *tableItemIndex;
+    QLabel *tableItemDescr;
     //Request *request;
 
     /*initial Class*/
@@ -65,6 +74,8 @@ private slots:
     void resetResultTableWidget();
     /*Open Dialog to load MIB txt*/
     void loadMIB();
+    /**/
+    void onTreeItemClicked(QTreeWidgetItem *node);
 
 };
 

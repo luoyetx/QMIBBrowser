@@ -5,12 +5,14 @@
 #include "common.h"
 
 typedef struct {
+    QString oid;
     QString name;
     QString syntax;
     QString access;
     QString status;
     QString index;
     QString description;
+    QString oidplus;
 } MIBNode;
 //Registe MIBNode to QMetaType
 Q_DECLARE_METATYPE(MIBNode*)
@@ -22,19 +24,22 @@ public:
     ~MIBTree();
     //load MIB file to tree
     Status loadMIB(QString fileName);
-    MIBNode* getNodeByOid(QString oid);
-    MIBNode* getNodeByName(QString name);
+    MIBNode* getNodeByOid(QString &oid);
+    MIBNode* getNodeByName(QString &name);
 
 private:
     //Tree Root
     QTreeWidgetItem *root;
     void destroyTree(QTreeWidgetItem *node);
+    //correct oid
+    void correctTree(QTreeWidgetItem *node, bool flag);
     //add node to MIBTree
     void addNode(QString &parentName, QString &nodeName, QString &pos, MIBNode *node);
     //init a new Node
     MIBNode* newNode();
     //find QTreeWidgetItem BY name
-    QTreeWidgetItem* findNodeItemByName(QTreeWidgetItem *node, QString name);
+    QTreeWidgetItem* findNodeItemByName(QTreeWidgetItem *node, QString &name);
+    QTreeWidgetItem* findNodeItemByOid(QTreeWidgetItem *node, QString &oid);
 };
 
 #endif // MIBTREE_H
