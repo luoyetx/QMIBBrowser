@@ -54,6 +54,7 @@ void MainWindow::initialWidgets()
     initialMIBTreeWidget(ui->MIBTreeWidget);
     initialMIBTableWidget(ui->MIBTableWidget);
     initialResultTableWidget(ui->resultTableWidget);
+    initialMenuToolBar(ui->mainToolBar);
     /*initialize OperationComboBox*/
     ui->operationComboBox->addItem("Get", QVariant(OperationGet));
     ui->operationComboBox->addItem("GetNext", QVariant(OperationGetNext));
@@ -121,6 +122,15 @@ void MainWindow::initialResultTableWidget(QTableWidget *resultTableWidget)
     resultTableWidget->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
 }
 
+void MainWindow::initialMenuToolBar(QToolBar *menuToolBar)
+{
+    //Add quick actions
+    menuToolBar->addAction(ui->actionGet);
+    menuToolBar->addAction(ui->actionGetNext);
+    menuToolBar->addAction(ui->actionSet);
+    menuToolBar->addAction(ui->actionClear);
+}
+
 /*Set up connections between widgets*/
 void MainWindow::initialConnections()
 {
@@ -138,6 +148,10 @@ void MainWindow::initialConnections()
     //TODO
     /*connect MIBTree*/
     connect(ui->MIBTreeWidget, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(onTreeItemClicked(QTreeWidgetItem*)));
+    /*connect quick actions*/
+    connect(ui->actionGet, SIGNAL(triggered()), this, SLOT(onActionGet()));
+    connect(ui->actionGetNext, SIGNAL(triggered()), this, SLOT(onActionGetNext()));
+    connect(ui->actionSet, SIGNAL(triggered()), this, SLOT(onActionSet()));
 }
 
 /*Update Widget Value with the given RequestInfo*/
@@ -427,6 +441,7 @@ void MainWindow::loadMIB()
     }
     else {
         //FAILED
+        QMessageBox::warning(this, "Warning", "Load MIB file Failed");
     }
 }
 
@@ -442,4 +457,28 @@ void MainWindow::onTreeItemClicked(QTreeWidgetItem *node)
     tableItemIndex->setText(rv->index);
     tableItemDescr->setText(rv->description);
     return;
+}
+
+void MainWindow::onActionGet()
+{
+    qDebug() << ">>>>>>>>Prepare to Send Request<<<<<<<<<<";
+    Request *request = new Request;
+    handleRequest(OperationGet, request);
+    delete request;
+}
+
+void MainWindow::onActionGetNext()
+{
+    qDebug() << ">>>>>>>>Prepare to Send Request<<<<<<<<<<";
+    Request *request = new Request;
+    handleRequest(OperationGetNext, request);
+    delete request;
+}
+
+void MainWindow::onActionSet()
+{
+    qDebug() << ">>>>>>>>Prepare to Send Request<<<<<<<<<<";
+    Request *request = new Request;
+    handleRequest(OperationSet, request);
+    delete request;
 }

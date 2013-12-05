@@ -180,12 +180,17 @@
     <property name="title">
      <string>About(&amp;A)</string>
     </property>
+    <addaction name="actionAbout_this"/>
     <addaction name="actionAbout_Qt"/>
    </widget>
    <widget class="QMenu" name="menuEdit_E">
     <property name="title">
      <string>Edit(&amp;E)</string>
     </property>
+    <addaction name="actionGet"/>
+    <addaction name="actionGetNext"/>
+    <addaction name="actionSet"/>
+    <addaction name="separator"/>
     <addaction name="actionClear"/>
    </widget>
    <addaction name="menu_File"/>
@@ -224,6 +229,26 @@
   <action name="actionClear">
    <property name="text">
     <string>Clear</string>
+   </property>
+  </action>
+  <action name="actionAbout_this">
+   <property name="text">
+    <string>about this</string>
+   </property>
+  </action>
+  <action name="actionGet">
+   <property name="text">
+    <string>Get</string>
+   </property>
+  </action>
+  <action name="actionGetNext">
+   <property name="text">
+    <string>GetNext</string>
+   </property>
+  </action>
+  <action name="actionSet">
+   <property name="text">
+    <string>Set</string>
    </property>
   </action>
  </widget>

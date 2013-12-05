@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QTreeWidget>
 #include <QTableWidget>
+#include <QToolBar>
 #include <QLabel>
 
 #include "common.h"
@@ -44,6 +45,7 @@ private:
     void initialMIBTreeWidget(QTreeWidget *MIBTreeWidget);
     void initialMIBTableWidget(QTableWidget *MIBTableWidget);
     void initialResultTableWidget(QTableWidget *resultTableWidget);
+    void initialMenuToolBar(QToolBar *menuToolBar);
     void initialConnections(void);
 
     /*Update Widget Value with the given RequestInfo*/
@@ -76,6 +78,10 @@ private slots:
     void loadMIB();
     /**/
     void onTreeItemClicked(QTreeWidgetItem *node);
+    /*Actions*/
+    void onActionGet();
+    void onActionGetNext();
+    void onActionSet();
 
 };
 
