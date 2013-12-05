@@ -243,6 +243,7 @@ Status MIBTree::loadMIB(QString fileName)
                             if (line.indexOf('}')!=-1) break;
                         }
                     }
+                    node->index = node->index.left(node->index.length()-1).mid(1).trimmed();
                     continue;
                 }
                 //DESCRIPTION
@@ -283,21 +284,21 @@ Status MIBTree::loadMIB(QString fileName)
         }
     }
     file.close();
-    correctTree(root, false);
+    QString temp("");
+    correctTree(root, temp);
     return Status_SUCCESS;
 }
 
-void MIBTree::correctTree(QTreeWidgetItem *node, bool flag)
-/*flag=true if parent node has index value*/
+void MIBTree::correctTree(QTreeWidgetItem *node, QString &index)
+/*index refer to parentNode index value*/
 {
-    if (flag==false && node->childCount()==0) {
-        node->data(0,Qt::UserRole).value<MIBNode*>()->oidplus = ".0";
+    if (node->childCount()==0) {
+        if (index=="") node->data(0,Qt::UserRole).value<MIBNode*>()->oidplus = ".0";
+        else node->data(0, Qt::UserRole).value<MIBNode*>()->index = index;
         return;
     }
     for (int i=0; i<node->childCount(); i++)
-        if (node->data(0, Qt::UserRole).value<MIBNode*>()->index=="")
-            correctTree(node->child(i), false);
-        else correctTree(node->child(i), true);
+        correctTree(node->child(i), node->data(0, Qt::UserRole).value<MIBNode*>()->index);
 }
 
 MIBNode* MIBTree::newNode()

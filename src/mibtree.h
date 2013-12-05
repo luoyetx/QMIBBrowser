@@ -32,7 +32,7 @@ private:
     QTreeWidgetItem *root;
     void destroyTree(QTreeWidgetItem *node);
     //correct oid
-    void correctTree(QTreeWidgetItem *node, bool flag);
+    void correctTree(QTreeWidgetItem *node, QString &index);
     //add node to MIBTree
     void addNode(QString &parentName, QString &nodeName, QString &pos, MIBNode *node);
     //init a new Node
