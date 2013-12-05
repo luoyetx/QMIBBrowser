@@ -34,4 +34,12 @@ typedef struct {
     snmp_version version;
 } RequestInfo;
 
+class Helper {
+
+public:
+    static void log(int level, QString message);
+    static void pop(QString title, QString message);
+
+};
+
 #endif // COMMON_H

@@ -1,7 +1,6 @@
 #include <QDebug>
 #include <QVariant>
 #include <QLabel>
-#include <QMessageBox>
 #include <QFileDialog>
 
 #include "mainwindow.h"
@@ -177,6 +176,7 @@ Status MainWindow::setUpRequest(Operation operation, Request *request)
     int port = requestInfo->port.toInt(&ok, 10);
     if (!ok) {
         /*error*/
+        Helper::pop("Warning", "Wrong port");
         return Status_FAILED;
     }
     udp.set_port(port);
@@ -274,14 +274,14 @@ Status MainWindow::checkRequest(Request *request)
     /*Check address*/
     if (!request->address.valid()) {
         /*error*/
-        QMessageBox::warning(this, "Warning", "Wrong IP Address");
+        Helper::pop("Warning", "Wrong IP Address");
         return Status_FAILED;
     }
     /*Check oid*/
     Oid oid;
     request->data.get_oid(oid);
     if (oid=="") {
-        QMessageBox::warning(this, "Warning", "Oid should be set");
+        Helper::pop("Warning", "Oid should be set");
         return Status_FAILED;
     }
     /*Check data*/
@@ -294,7 +294,7 @@ Status MainWindow::checkRequest(Request *request)
     case OperationSet:
         /*value shoudn't be null(including OID)*/
         if (!request->data.valid()) {
-            QMessageBox::warning(this, "Warning", "Value Should be set");
+            Helper::pop("Warning", "Value Should be set");
             return Status_FAILED;
         }
         break;
@@ -416,7 +416,7 @@ void MainWindow::onGoPushButtonClicked()
     bool ok;
     Operation operation = ui->operationComboBox->itemData(index).toInt(&ok);
     if (!ok) {
-        QMessageBox::warning(this, "Waring", "Wrong Request Method");
+        Helper::pop("Waring", "Wrong Request Method");
         return;
     }
     Request *request = new Request;
@@ -441,7 +441,8 @@ void MainWindow::loadMIB()
     }
     else {
         //FAILED
-        QMessageBox::warning(this, "Warning", "Load MIB file Failed");
+        Helper::log(0, "Load MIB file Failed");
+        Helper::pop("Error", "Load MIB file Failed");
     }
 }
 

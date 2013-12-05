@@ -25,7 +25,8 @@ SOURCES += \
     src/snmpmanager.cpp \
     src/advancedoptiondialog.cpp \
     src/setrequestdialog.cpp \
-    src/mibtree.cpp
+    src/mibtree.cpp \
+    src/common.cpp
 
 INCLUDEPATH += $$PWD/includes
 

@@ -1,5 +1,3 @@
-#include <QMessageBox>
-
 #include "setrequestdialog.h"
 #include "ui_setrequestdialog.h"
 
@@ -48,7 +46,7 @@ void SetRequestDialog::onOkPushButtonClicked()
         rv = value.toInt(&ok, 10);
         if (!ok) {
             /*Wrong Integer Number*/
-            QMessageBox::warning(this, "Warning", "Wrong Integer Number");
+            Helper::pop("Warning", "Wrong Integer Number");
             return;
         }
         data->set_value(rv);

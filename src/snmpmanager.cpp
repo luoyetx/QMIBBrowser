@@ -34,7 +34,8 @@ Status SnmpManager::handleOperationGet(Request *request)
     Snmp snmp(status, 0, false);
     if (status != SNMP_CLASS_SUCCESS) {
         /*Setup SNMP FAILED*/
-        QMessageBox::warning(0, "Warning", "RequestGet Failed");
+        Helper::log(0, "RequestGet Failed");
+        Helper::pop("Error", "RequestGet Failed");
         Snmp::socket_cleanup();
         return Status_FAILED;
     }
@@ -55,7 +56,8 @@ Status SnmpManager::handleOperationGet(Request *request)
     }
     else {
         /*GetRequest FAILED*/
-        QMessageBox::warning(0, "Warning", "RequestGet Failed");
+        Helper::log(0, "RequestGet Failed");
+        Helper::pop("Error", "RequestGet Failed");
         Snmp::socket_cleanup();
         return Status_FAILED;
     }
@@ -75,7 +77,8 @@ Status SnmpManager::handleOperationGetNext(Request *request)
     Snmp snmp(status, 0, false);
     if (status != SNMP_CLASS_SUCCESS) {
         /*Setup SNMP FAILED*/
-        QMessageBox::warning(0, "Warning", "RequestGetNext Failed");
+        Helper::log(0, "RequestGetNext Failed");
+        Helper::pop("Error", "RequestGetNext Failed");
         Snmp::socket_cleanup();
         return Status_FAILED;
     }
@@ -96,7 +99,8 @@ Status SnmpManager::handleOperationGetNext(Request *request)
     }
     else {
         /*GetNextRequest FAILED*/
-        QMessageBox::warning(0, "Warning", "RequestGetNext Failed");
+        Helper::log(0, "RequestGetNext Failed");
+        Helper::pop("Error", "RequestGetNext Failed");
         Snmp::socket_cleanup();
         return Status_FAILED;
     }
@@ -116,7 +120,8 @@ Status SnmpManager::handleOperationSet(Request *request)
     Snmp snmp(status, 0, false);
     if (status == SNMP_CLASS_SUCCESS) {
         /*Setup SNMP FAILED*/
-        QMessageBox::warning(0, "Warning", "RequestSet Failed");
+        Helper::log(0, "RequestSet Failed");
+        Helper::pop("Error", "RequestSet Failed");
         Snmp::socket_cleanup();
         return Status_FAILED;
     }
@@ -131,11 +136,13 @@ Status SnmpManager::handleOperationSet(Request *request)
     status = snmp.set(pdu, *target);
     if (status == SNMP_CLASS_SUCCESS) {
         /*SetRequest SUCCESS*/
-        QMessageBox::about(0, "Info", "RequestSet Success");
+        Helper::log(1, "RequestSet Success");
+        Helper::pop("Info", "RequestSet Success");
     }
     else {
         /*SetRequest FAILED*/
-        QMessageBox::warning(0, "Warning", "RequestSet Failed");
+        Helper::log(0, "RequestSet Failed");
+        Helper::pop("Error", "RequestSet Failed");
         Snmp::socket_cleanup();
         return Status_FAILED;
     }
