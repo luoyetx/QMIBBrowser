@@ -34,7 +34,7 @@ private:
     //correct oid
     void correctTree(QTreeWidgetItem *node, QString &index);
     //add node to MIBTree
-    void addNode(QString &parentName, QString &nodeName, QString &pos, MIBNode *node);
+    void addNode(QString &parentName, QString &nodeName, QString &pos, MIBNode *node=NULL);
     //init a new Node
     MIBNode* newNode();
     //find QTreeWidgetItem BY name

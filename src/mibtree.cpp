@@ -9,12 +9,31 @@ MIBTree::MIBTree(QTreeWidget *tree)
     //Initial Root
     root = new QTreeWidgetItem(tree);
     MIBNode *rootNode = newNode();
-    rootNode->name = "mgmt";
-    rootNode->oid = "1.3.6.1.2";
+    rootNode->name = "internet";
+    rootNode->oid = "1.3.6.1";
 
     root->setData(0, Qt::UserRole, QVariant::fromValue(rootNode));
     root->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-    root->setText(0, "mgmt");
+    root->setText(0, "internet");
+
+    //add origin oid
+    QFile file("mibs/oids.txt");
+    if (!file.open(QIODevice::ReadOnly)) {
+        qDebug() << "Open file mibs/oids.txt Failed";
+    }
+    QTextStream in(&file);
+    QString line, parentName, nodeName, pos, oid;
+    while (!in.atEnd()) {
+        line = in.readLine();
+        //1.3.6.1.4.1.22137 - Ivosh
+        oid = line.left(line.indexOf('-')-1);
+        nodeName = line.mid(line.indexOf('-')+2);
+        pos = oid.mid(oid.lastIndexOf('.')+1);
+        oid = oid.left(oid.lastIndexOf('.'));
+        parentName = getNodeByOid(oid)->name;
+        addNode(parentName, nodeName, pos);
+    }
+    file.close();
 }
 
 MIBTree::~MIBTree()
@@ -31,7 +50,7 @@ void MIBTree::destroyTree(QTreeWidgetItem *node)
 }
 
 /*Add node BY ParentName NodeName Position*/
-void MIBTree::addNode(QString &parentName, QString &nodeName, QString &pos, MIBNode *node=NULL)
+void MIBTree::addNode(QString &parentName, QString &nodeName, QString &pos, MIBNode *node)
 {
     //find parent node
     QTreeWidgetItem *parent;
@@ -41,6 +60,12 @@ void MIBTree::addNode(QString &parentName, QString &nodeName, QString &pos, MIBN
         //Do nothing
         return;
     }
+    //check nodes
+    for (int i=0; i<parent->childCount(); i++)
+        if (parent->child(i)->data(0, Qt::UserRole).value<MIBNode*>()->name == nodeName) {
+            //node already registed
+            return;
+        }
     MIBNode *parentNode = parent->data(0, Qt::UserRole).value<MIBNode*>();
     if (node==NULL) {
         node = newNode();
@@ -263,7 +288,11 @@ Status MIBTree::loadMIB(QString fileName)
                         descr += ' ' + line;
                         if (line.indexOf('\"',2)>2) break;
                     }
-                    node->description = descr.simplified();
+                    //remove \"
+                    descr = descr.simplified();
+                    descr = descr.mid(1);
+                    descr = descr.left(descr.length()-1);
+                    node->description = descr;
                     continue;
                 }
                 //LAST

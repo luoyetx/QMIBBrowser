@@ -173,7 +173,6 @@
      <string>File(&amp;F)</string>
     </property>
     <addaction name="actionLoad_MIB"/>
-    <addaction name="actionRegister_Oid"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuAbout_A">
@@ -219,11 +218,6 @@
   <action name="actionLoad_MIB">
    <property name="text">
     <string>Load MIB</string>
-   </property>
-  </action>
-  <action name="actionRegister_Oid">
-   <property name="text">
-    <string>Register Oid</string>
    </property>
   </action>
   <action name="actionClear">
