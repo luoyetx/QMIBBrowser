@@ -127,11 +127,6 @@
               <height>200</height>
              </size>
             </property>
-            <column>
-             <property name="text">
-              <string>MIB</string>
-             </property>
-            </column>
            </widget>
           </item>
           <item>
