@@ -120,7 +120,7 @@ Status SnmpManager::handleOperationSet(Request *request)
     Snmp::socket_startup();
     int status;
     Snmp snmp(status, 0, false);
-    if (status == SNMP_CLASS_SUCCESS) {
+    if (status != SNMP_CLASS_SUCCESS) {
         /*Setup SNMP FAILED*/
         Helper::log(0, "RequestSet Failed");
         Helper::log(1, snmp.error_msg(status));
