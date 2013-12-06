@@ -11,7 +11,7 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow), snmpManager(new SnmpManager),
+    ui(new Ui::MainWindow),
     requestInfo(new RequestInfo)//, request(new Request)
 {
     ui->setupUi(this);
@@ -24,7 +24,6 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete mibTree;
-    delete snmpManager;
     delete requestInfo;
     delete ui;
     delete tableItemName;
@@ -64,7 +63,7 @@ void MainWindow::initialWidgets()
 
 void MainWindow::initialMIBTreeWidget(QTreeWidget *MIBTreeWidget)
 {
-    mibTree = new MIBTree(ui->MIBTreeWidget);
+    mibTree = new MIBTree(MIBTreeWidget);
     QString fileName = "mibs/mib2.txt";
     mibTree->loadMIB(fileName);
 }
@@ -315,7 +314,7 @@ void MainWindow::handleRequest(Operation operation, Request *request)
     status = setUpRequest(operation, request);
     if (status == Status_SUCCESS) {
         /*Setup Request Correctly and Prepare to Send Request*/
-        status = snmpManager->handleOperation(request);
+        status = SnmpManager::handleOperation(request);
         if (status == Status_SUCCESS) {
             /*Handle Request Successfully*/
             if (request->operation != OperationSet) {

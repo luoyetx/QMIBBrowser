@@ -3,10 +3,6 @@
 
 #include "snmpmanager.h"
 
-SnmpManager::SnmpManager() {}
-
-SnmpManager::~SnmpManager() {}
-
 Status SnmpManager::handleOperation(Request *request)
 {
     Status status;

@@ -26,7 +26,6 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    SnmpManager *snmpManager;
     RequestInfo *requestInfo;
     MIBTree *mibTree;
     //MIBTable items

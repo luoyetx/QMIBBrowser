@@ -8,20 +8,18 @@
 class SnmpManager {
 
 public:
-    SnmpManager();
-    ~SnmpManager();
     /*Handle Request Operation 'GetRequest', 'GetNextRequest', 'SetRequest'*/
-    Status handleOperation(Request *requestt);
+    static Status handleOperation(Request *requestt);
     /*Load MIB file*/
     //Status loadMIB(QString fileName, QTreeWidget *MIBTableWidget);
 
 private:
     /*Operation GetRequest*/
-    Status handleOperationGet(Request *request);
+    static Status handleOperationGet(Request *request);
     /*Operation GetNextRequest*/
-    Status handleOperationGetNext(Request *request);
+    static Status handleOperationGetNext(Request *request);
     /*Operation SetRequest*/
-    Status handleOperationSet(Request *request);
+    static Status handleOperationSet(Request *request);
 
 };
 #endif // SNMPMANAGER_H
