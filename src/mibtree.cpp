@@ -1,4 +1,8 @@
 #include <QFile>
+#include <QFileInfo>
+#include <QList>
+#include <QStringList>
+#include <QDir>
 #include <QDebug>
 #include <QTextStream>
 
@@ -34,6 +38,12 @@ MIBTree::MIBTree(QTreeWidget *tree)
         addNode(parentName, nodeName, pos);
     }
     file.close();
+    correctTree(root, QString(""));
+    //add given mibs
+    QDir dir("mibs/", "*.txt");
+    foreach (QString file, dir.entryList())
+        if (file != "oids.txt")
+            loadMIB("mibs/"+file);
 }
 
 MIBTree::~MIBTree()
@@ -313,6 +323,9 @@ Status MIBTree::loadMIB(QString fileName)
         }
     }
     file.close();
+    //save file to root path
+    QFileInfo fileInfo(file);
+    file.copy("mibs/"+fileInfo.fileName());
     correctTree(root, QString(""));
     return Status_SUCCESS;
 }
@@ -380,8 +393,15 @@ QTreeWidgetItem* MIBTree::findNodeItemByName(QTreeWidgetItem *node, QString &nam
 QTreeWidgetItem* MIBTree::findNodeItemByOid(QTreeWidgetItem *node, QString &oid)
 /*DFS*/
 {
-    if (node->data(0, Qt::UserRole).value<MIBNode*>()->oid == oid) {
+    MIBNode *rv = node->data(0, Qt::UserRole).value<MIBNode*>();
+    if (rv->oid == oid) {
         //find node
+        //type1: oid
+        return node;
+    }
+    else if (rv->oid+rv->oidplus == oid) {
+        //find node
+        //type2: oid+oidplus
         return node;
     }
     else {

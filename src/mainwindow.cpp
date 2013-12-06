@@ -43,6 +43,7 @@ void MainWindow::initialRequestInfo(RequestInfo *requestInfo)
 
 void MainWindow::initialWidgets()
 {
+    ui->OidLineEdit->setReadOnly(true);
     initialMIBTreeWidget(ui->MIBTreeWidget);
     initialMIBTableWidget(ui->MIBTableWidget);
     initialResultTableWidget(ui->resultTableWidget);
@@ -57,11 +58,11 @@ void MainWindow::initialWidgets()
 
 void MainWindow::initialMIBTreeWidget(QTreeWidget *MIBTreeWidget)
 {
+    MIBTreeWidget->setColumnCount(1);
+    MIBTreeWidget->setHeaderLabel("MIB");
     MIBTreeWidget->header()->setResizeMode(QHeaderView::ResizeToContents);
     MIBTreeWidget->header()->setStretchLastSection(false);
     mibTree = new MIBTree(MIBTreeWidget);
-    QString fileName = "mibs/mib2.txt";
-    mibTree->loadMIB(fileName);
 }
 
 void MainWindow::initialMIBTableWidget(QTableWidget *MIBTableWidget)
@@ -223,6 +224,11 @@ Status MainWindow::setUpRequestGet(Request *request)
     request->data.clear();
     std::string oid;
     oid = requestInfo->oid.toStdString();
+    //oid should be set
+    if (oid == "") {
+        Helper::pop("Warning", "Oid should be set");
+        return Status_FAILED;
+    }
     request->data.set_oid(Oid(oid.c_str()));
     return Status_SUCCESS;
 }
@@ -233,6 +239,11 @@ Status MainWindow::setUpRequestGetNext(Request *request)
     request->data.clear();
     std::string oid;
     oid = requestInfo->oid.toStdString();
+    //oid should be set
+    if (oid == "") {
+        Helper::pop("Warning", "Oid should be set");
+        return Status_FAILED;
+    }
     request->data.set_oid(Oid(oid.c_str()));
     return Status_SUCCESS;
 }
@@ -243,9 +254,19 @@ Status MainWindow::setUpRequestSet(Request *request)
     request->data.clear();
     std::string oid;
     oid = requestInfo->oid.toStdString();
+    //oid should be set
+    if (oid == "") {
+        Helper::pop("Warning", "Oid should be set");
+        return Status_FAILED;
+    }
     request->data.set_oid(Oid(oid.c_str()));
+    MIBNode *node = mibTree->getNodeByOid(requestInfo->oid);
+    if (node == NULL) {
+        Helper::pop("Warning", "Wrong Oid");
+        return Status_FAILED;
+    }
     /*Pop Set Dialog*/
-    SetRequestDialog *dialog = new SetRequestDialog(&(request->data), this);
+    SetRequestDialog *dialog = new SetRequestDialog(&(request->data), node->syntax, this);
     dialog->exec();
     if (dialog->cancel) {
         /*Cancel PushButton Clicked*/
@@ -432,6 +453,8 @@ void MainWindow::loadMIB()
 {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "", tr("File (*.txt)"));
     qDebug() << ">>>>>>>>>>>Prepare to load file: " << fileName << "<<<<<<<<<";
+    if (fileName == "")
+        return;
     if (mibTree->loadMIB(fileName)==Status_SUCCESS) {
         //SUCCESS LOAD
     }
