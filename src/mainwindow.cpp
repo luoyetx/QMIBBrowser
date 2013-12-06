@@ -2,6 +2,7 @@
 #include <QVariant>
 #include <QLabel>
 #include <QFileDialog>
+#include <QMessageBox>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -26,13 +27,6 @@ MainWindow::~MainWindow()
     delete mibTree;
     delete requestInfo;
     delete ui;
-    delete tableItemName;
-    delete tableItemOid;
-    delete tableItemSyntax;
-    delete tableItemAccess;
-    delete tableItemStatus;
-    delete tableItemIndex;
-    delete tableItemDescr;
     //delete request;
 }
 
@@ -63,6 +57,8 @@ void MainWindow::initialWidgets()
 
 void MainWindow::initialMIBTreeWidget(QTreeWidget *MIBTreeWidget)
 {
+    MIBTreeWidget->header()->setResizeMode(QHeaderView::ResizeToContents);
+    MIBTreeWidget->header()->setStretchLastSection(false);
     mibTree = new MIBTree(MIBTreeWidget);
     QString fileName = "mibs/mib2.txt";
     mibTree->loadMIB(fileName);
@@ -87,13 +83,13 @@ void MainWindow::initialMIBTableWidget(QTableWidget *MIBTableWidget)
     MIBTableWidget->horizontalHeader()->setStretchLastSection(true);
     MIBTableWidget->setRowHeight(6, 120);
     /*Add Items to Table*/
-    tableItemName = new QLabel();
-    tableItemOid = new QLabel();
-    tableItemSyntax = new QLabel();
-    tableItemAccess = new QLabel();
-    tableItemStatus = new QLabel();
-    tableItemIndex = new QLabel();
-    tableItemDescr = new QLabel();
+    tableItemName = new QLabel(MIBTableWidget);
+    tableItemOid = new QLabel(MIBTableWidget);
+    tableItemSyntax = new QLabel(MIBTableWidget);
+    tableItemAccess = new QLabel(MIBTableWidget);
+    tableItemStatus = new QLabel(MIBTableWidget);
+    tableItemIndex = new QLabel(MIBTableWidget);
+    tableItemDescr = new QLabel(MIBTableWidget);
     tableItemDescr->setWordWrap(true);
     tableItemDescr->setAlignment(Qt::AlignLeft|Qt::AlignTop);
     MIBTableWidget->setCellWidget(0, 0, tableItemName);
@@ -135,6 +131,7 @@ void MainWindow::initialConnections()
     /*Initialize Actions*/
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(close()));
     connect(ui->actionAbout_Qt, SIGNAL(triggered()), QApplication::instance(), SLOT(aboutQt()));
+    connect(ui->actionAbout_this, SIGNAL(triggered()), this, SLOT(aboutThis()));
     /*Initialize Connections between Widgets*/
     connect(ui->IPLineEdit, SIGNAL(textChanged(QString)), this, SLOT(onIPLineEditChanged(QString)));
     connect(ui->OidLineEdit, SIGNAL(textChanged(QString)), this, SLOT(onOidLineEditChanged(QString)));
@@ -481,4 +478,12 @@ void MainWindow::onActionSet()
     Request *request = new Request;
     handleRequest(OperationSet, request);
     delete request;
+}
+
+void MainWindow::aboutThis()
+{
+    QMessageBox::about(this, tr("About Application"),
+                       tr("The Application is based on <a href=\"http://www.agentpp.com/\"><b>snmp++</b></a>"
+                          "and <a href=\"http://qt-project.org/\"><b>Qt</b></a>.<br>"
+                          "Thanks to those open source projects making our life easier."));
 }

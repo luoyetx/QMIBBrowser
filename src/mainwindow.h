@@ -81,7 +81,8 @@ private slots:
     void onActionGet();
     void onActionGetNext();
     void onActionSet();
-
+    /*About*/
+    void aboutThis();
 };
 
 #endif // MAINWINDOW_H
