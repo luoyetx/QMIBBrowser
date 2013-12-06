@@ -1,7 +1,7 @@
 #include "setrequestdialog.h"
 #include "ui_setrequestdialog.h"
 
-SetRequestDialog::SetRequestDialog(Vb *data, QWidget *parent) :
+SetRequestDialog::SetRequestDialog(Vb *data, QString nodeType, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::SetRequestDialog), data(new Vb), cancel(true)
 {
@@ -11,7 +11,11 @@ SetRequestDialog::SetRequestDialog(Vb *data, QWidget *parent) :
     QString oid;
     oid = data->get_printable_oid();
     ui->oidLineEdit->setText(oid);
-    ui->oidLineEdit->setReadOnly(true);
+    //ui->oidLineEdit->setReadOnly(true);
+    if (nodeType != "")
+        ui->nodeTypeLineEdit->setText(nodeType);
+    else ui->nodeTypeLineEdit->setText("[Warning]This Oid can't be set");
+    ui->nodeTypeLineEdit->setReadOnly(true);
     ui->typeComboBox->addItem("INTEGER", QVariant(INTEGER));
     ui->typeComboBox->addItem("OCTET STRING", QVariant(STRING));
     /*connections between widgets*/

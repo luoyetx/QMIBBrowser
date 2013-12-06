@@ -17,7 +17,7 @@ class SetRequestDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit SetRequestDialog(Vb *data, QWidget *parent = 0);
+    explicit SetRequestDialog(Vb *data, QString nodeType, QWidget *parent = 0);
     ~SetRequestDialog();
 
     /*false if OkPushButton Clicked, otherwise true, default is true*/
