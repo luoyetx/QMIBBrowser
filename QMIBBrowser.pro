@@ -43,3 +43,12 @@ FORMS += \
     ui/mainwindow.ui \
     ui/advancedoptiondialog.ui \
     ui/setrequestdialog.ui \
+
+RESOURCES += \
+    resource/resource.qrc
+
+OTHER_FILES += \
+    resource/logo.rc
+
+RC_FILE += \
+    resource/logo.rc

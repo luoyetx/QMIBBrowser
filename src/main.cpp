@@ -4,6 +4,7 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    a.setWindowIcon(QIcon(":/images/logo.ico"));
     MainWindow w;
     Helper::log(1, "Open Software");
     w.show();

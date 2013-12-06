@@ -313,8 +313,7 @@ Status MIBTree::loadMIB(QString fileName)
         }
     }
     file.close();
-    QString temp("");
-    correctTree(root, temp);
+    correctTree(root, QString(""));
     return Status_SUCCESS;
 }
 
@@ -326,6 +325,7 @@ void MIBTree::correctTree(QTreeWidgetItem *node, QString &index)
         else node->data(0, Qt::UserRole).value<MIBNode*>()->index = index;
         return;
     }
+    node->setIcon(0, QIcon(":/images/package.ico"));
     for (int i=0; i<node->childCount(); i++)
         correctTree(node->child(i), node->data(0, Qt::UserRole).value<MIBNode*>()->index);
 }
