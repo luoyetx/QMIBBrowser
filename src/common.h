@@ -1,6 +1,7 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+#include <stdio.h>
 #include <snmp_pp/snmp_pp.h>
 #include <QString>
 
@@ -39,6 +40,8 @@ class Helper {
 public:
     static void log(int level, QString message);
     static void pop(QString title, QString message);
+    static void init();
+    static void finish();
 
 };
 

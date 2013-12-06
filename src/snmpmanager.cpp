@@ -31,6 +31,7 @@ Status SnmpManager::handleOperationGet(Request *request)
     if (status != SNMP_CLASS_SUCCESS) {
         /*Setup SNMP FAILED*/
         Helper::log(0, "RequestGet Failed");
+        Helper::log(1, snmp.error_msg(status));
         Helper::pop("Error", "RequestGet Failed");
         Snmp::socket_cleanup();
         return Status_FAILED;
@@ -47,12 +48,14 @@ Status SnmpManager::handleOperationGet(Request *request)
     if (status == SNMP_CLASS_SUCCESS) {
         /*GetRequest SUCCESS*/
         pdu.get_vb(request->data, 0);
+        Helper::log(1, "RequestGet SUCCESS");
         QString replayOid = request->data.get_printable_oid();
         QString replayValue = request->data.get_printable_value();
     }
     else {
         /*GetRequest FAILED*/
         Helper::log(0, "RequestGet Failed");
+        Helper::log(1, snmp.error_msg(status));
         Helper::pop("Error", "RequestGet Failed");
         Snmp::socket_cleanup();
         return Status_FAILED;
@@ -74,6 +77,7 @@ Status SnmpManager::handleOperationGetNext(Request *request)
     if (status != SNMP_CLASS_SUCCESS) {
         /*Setup SNMP FAILED*/
         Helper::log(0, "RequestGetNext Failed");
+        Helper::log(1, snmp.error_msg(status));
         Helper::pop("Error", "RequestGetNext Failed");
         Snmp::socket_cleanup();
         return Status_FAILED;
@@ -89,6 +93,7 @@ Status SnmpManager::handleOperationGetNext(Request *request)
     status = snmp.get_next(pdu, *target);
     if (status == SNMP_CLASS_SUCCESS) {
         /*GetNextRequest SUCCESS*/
+        Helper::log(1, "RequestGetNext SUCCESS");
         pdu.get_vb(request->data, 0);
         QString replayOid = request->data.get_printable_oid();
         QString replayValue = request->data.get_printable_value();
@@ -96,6 +101,7 @@ Status SnmpManager::handleOperationGetNext(Request *request)
     else {
         /*GetNextRequest FAILED*/
         Helper::log(0, "RequestGetNext Failed");
+        Helper::log(1, snmp.error_msg(status));
         Helper::pop("Error", "RequestGetNext Failed");
         Snmp::socket_cleanup();
         return Status_FAILED;
@@ -117,6 +123,7 @@ Status SnmpManager::handleOperationSet(Request *request)
     if (status == SNMP_CLASS_SUCCESS) {
         /*Setup SNMP FAILED*/
         Helper::log(0, "RequestSet Failed");
+        Helper::log(1, snmp.error_msg(status));
         Helper::pop("Error", "RequestSet Failed");
         Snmp::socket_cleanup();
         return Status_FAILED;
@@ -138,6 +145,7 @@ Status SnmpManager::handleOperationSet(Request *request)
     else {
         /*SetRequest FAILED*/
         Helper::log(0, "RequestSet Failed");
+        Helper::log(1, snmp.error_msg(status));
         Helper::pop("Error", "RequestSet Failed");
         Snmp::socket_cleanup();
         return Status_FAILED;
