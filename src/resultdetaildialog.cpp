@@ -14,6 +14,7 @@ ResultDetailDialog::ResultDetailDialog(QString name, QString type, QString value
     ui->typeLineEdit->setReadOnly(true);
     ui->valueTextEdit->setReadOnly(true);
     connect(ui->closePushButton, SIGNAL(clicked()), this, SLOT(close()));
+    setWindowTitle("Result Detail");
 }
 
 ResultDetailDialog::~ResultDetailDialog()

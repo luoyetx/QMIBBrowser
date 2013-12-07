@@ -20,6 +20,7 @@ AdvancedOptionDialog::AdvancedOptionDialog(RequestInfo *requestInfo, QWidget *pa
     connect(this, SIGNAL(requestInfoChanged(RequestInfo*)), parent, SLOT(updateRequestInfo(RequestInfo*)));
 
     initialRequestInfo(requestInfo);
+    setWindowTitle("Advanced");
 }
 
 AdvancedOptionDialog::~AdvancedOptionDialog()

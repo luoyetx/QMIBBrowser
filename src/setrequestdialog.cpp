@@ -23,6 +23,7 @@ SetRequestDialog::SetRequestDialog(Vb *data, QString nodeType, QWidget *parent) 
     //connect(ui->cancelPushButton, SIGNAL(clicked()), this, SLOT(onCancelPushButonClicked()));
     //connect(ui->okPushButton, SIGNAL(clicked()), this, SLOT(close()));
     connect(ui->cancelPushButton, SIGNAL(clicked()), this, SLOT(close()));
+    setWindowTitle("Set");
 }
 
 SetRequestDialog::~SetRequestDialog()

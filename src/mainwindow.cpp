@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
     initialConnections();
     initialRequestInfo(requestInfo);
     updateWidgetValue(requestInfo);
+    setWindowTitle("QMIB");
 }
 
 MainWindow::~MainWindow()
