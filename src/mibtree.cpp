@@ -88,7 +88,6 @@ void MIBTree::addNode(QString &parentName, QString &nodeName, QString &pos, MIBN
     nodeItem->setData(0, Qt::UserRole, QVariant::fromValue(node));
     nodeItem->setText(0, node->name);
     qDebug() << parentName << "--->" << nodeName << "--->" << node->oid << "installed";
-    qDebug() << nodeItem->childCount();
     //TODO
 }
 
@@ -394,14 +393,8 @@ QTreeWidgetItem* MIBTree::findNodeItemByOid(QTreeWidgetItem *node, QString &oid)
 /*DFS*/
 {
     MIBNode *rv = node->data(0, Qt::UserRole).value<MIBNode*>();
-    if (rv->oid == oid) {
+    if (node->childCount()!=0 && rv->oid==oid || node->childCount()==0 && oid.indexOf(rv->oid)==0) {
         //find node
-        //type1: oid
-        return node;
-    }
-    else if (rv->oid+rv->oidplus == oid) {
-        //find node
-        //type2: oid+oidplus
         return node;
     }
     else {
