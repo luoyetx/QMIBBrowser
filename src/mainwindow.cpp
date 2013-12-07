@@ -26,6 +26,9 @@ MainWindow::~MainWindow()
 {
     delete mibTree;
     delete requestInfo;
+    //remove table content[IMPORTANT]
+    ui->MIBTableWidget->clearContents();
+    ui->resultTableWidget->clearContents();
     delete ui;
     //delete request;
 }
@@ -84,22 +87,23 @@ void MainWindow::initialMIBTableWidget(QTableWidget *MIBTableWidget)
     MIBTableWidget->horizontalHeader()->setStretchLastSection(true);
     MIBTableWidget->setRowHeight(6, 120);
     /*Add Items to Table*/
-    tableItemName = new QLabel(MIBTableWidget);
-    tableItemOid = new QLabel(MIBTableWidget);
-    tableItemSyntax = new QLabel(MIBTableWidget);
-    tableItemAccess = new QLabel(MIBTableWidget);
-    tableItemStatus = new QLabel(MIBTableWidget);
-    tableItemIndex = new QLabel(MIBTableWidget);
-    tableItemDescr = new QLabel(MIBTableWidget);
-    tableItemDescr->setWordWrap(true);
-    tableItemDescr->setAlignment(Qt::AlignLeft|Qt::AlignTop);
-    MIBTableWidget->setCellWidget(0, 0, tableItemName);
-    MIBTableWidget->setCellWidget(1, 0, tableItemOid);
-    MIBTableWidget->setCellWidget(2, 0, tableItemSyntax);
-    MIBTableWidget->setCellWidget(3, 0, tableItemAccess);
-    MIBTableWidget->setCellWidget(4, 0, tableItemStatus);
-    MIBTableWidget->setCellWidget(5, 0, tableItemIndex);
-    MIBTableWidget->setCellWidget(6, 0, tableItemDescr);
+    QTableWidgetItem *itemName = new QTableWidgetItem("");
+    QTableWidgetItem *itemOid = new QTableWidgetItem("");
+    QTableWidgetItem *itemSyntax = new QTableWidgetItem("");
+    QTableWidgetItem *itemAccess = new QTableWidgetItem("");
+    QTableWidgetItem *itemStatus = new QTableWidgetItem("");
+    QTableWidgetItem *itemIndex = new QTableWidgetItem("");
+    QTableWidgetItem *itemDescr = new QTableWidgetItem("");
+    //itemDescr->setWordWrap(true);
+    //itemDescr->setAlignment(Qt::AlignLeft|Qt::AlignTop);
+    itemDescr->setTextAlignment(Qt::AlignLeft|Qt::AlignTop);
+    MIBTableWidget->setItem(0, 0, itemName);
+    MIBTableWidget->setItem(1, 0, itemOid);
+    MIBTableWidget->setItem(2, 0, itemSyntax);
+    MIBTableWidget->setItem(3, 0, itemAccess);
+    MIBTableWidget->setItem(4, 0, itemStatus);
+    MIBTableWidget->setItem(5, 0, itemIndex);
+    MIBTableWidget->setItem(6, 0, itemDescr);
 }
 
 void MainWindow::initialResultTableWidget(QTableWidget *resultTableWidget)
@@ -142,6 +146,8 @@ void MainWindow::initialConnections()
     connect(ui->actionClear, SIGNAL(triggered()), this, SLOT(resetResultTableWidget()));
     connect(ui->actionLoad_MIB, SIGNAL(triggered()), this, SLOT(loadMIB()));
     //TODO
+    /*ResultTable*/
+    connect(ui->resultTableWidget, SIGNAL(cellClicked(int,int)), this, SLOT(onResultTableClicked(int,int)));
     /*connect MIBTree*/
     connect(ui->MIBTreeWidget, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(onTreeItemClicked(QTreeWidgetItem*)));
     /*connect quick actions*/
@@ -342,9 +348,9 @@ void MainWindow::handleRequest(Operation operation, Request *request)
                 ui->resultTableWidget->insertRow(row);
                 //TODO, here just for debug
                 /*Set Value Readable*/
-                QLabel *itemOid = new QLabel("", ui->resultTableWidget);
-                QLabel *itemValue = new QLabel("", ui->resultTableWidget);
-                QLabel *itemType = new QLabel("", ui->resultTableWidget);
+                QTableWidgetItem *itemOid = new QTableWidgetItem("");
+                QTableWidgetItem *itemValue = new QTableWidgetItem("");
+                QTableWidgetItem *itemType = new QTableWidgetItem("");
                 MIBNode *rv;
                 QString oid = request->data.get_printable_oid();
                 QString pos;
@@ -360,9 +366,9 @@ void MainWindow::handleRequest(Operation operation, Request *request)
                 itemType->setText(rv->syntax);
                 itemOid->setText(rv->name+pos);
                 itemValue->setToolTip(itemValue->text());
-                ui->resultTableWidget->setCellWidget(row, 0, itemOid);
-                ui->resultTableWidget->setCellWidget(row, 1, itemType);
-                ui->resultTableWidget->setCellWidget(row, 2, itemValue);
+                ui->resultTableWidget->setItem(row, 0, itemOid);
+                ui->resultTableWidget->setItem(row, 1, itemType);
+                ui->resultTableWidget->setItem(row, 2, itemValue);
             }
             /*flesh Oid (Needed By OperationGetNext), but I'll flesh each time*/
             ui->OidLineEdit->setText(request->data.get_oid().get_printable());
@@ -469,14 +475,26 @@ void MainWindow::onTreeItemClicked(QTreeWidgetItem *node)
 {
     MIBNode *rv = node->data(0, Qt::UserRole).value<MIBNode*>();
     ui->OidLineEdit->setText(rv->oid+rv->oidplus);
-    tableItemName->setText(rv->name);
-    tableItemOid->setText(rv->oid);
-    tableItemSyntax->setText(rv->syntax);
-    tableItemAccess->setText(rv->access);
-    tableItemStatus->setText(rv->status);
-    tableItemIndex->setText(rv->index);
-    tableItemDescr->setText(rv->description);
+    QTableWidget *tb = ui->MIBTableWidget;
+    tb->item(0, 0)->setText(rv->name);
+    tb->item(1, 0)->setText(rv->oid);
+    tb->item(2, 0)->setText(rv->syntax);
+    tb->item(3, 0)->setText(rv->access);
+    tb->item(4, 0)->setText(rv->status);
+    tb->item(5, 0)->setText(rv->index);
+    tb->item(6, 0)->setText(rv->description);
     return;
+}
+
+void MainWindow::onResultTableClicked(int row, int column)
+{
+    QTableWidgetItem *rv = ui->resultTableWidget->item(row, column);
+    QString oid = rv->text();
+    MIBNode *node;
+    node = mibTree->getNodeByName(oid.left(oid.indexOf('.')));
+    if (node != NULL) {
+        ui->OidLineEdit->setText(node->oid+oid.mid(oid.indexOf('.')));
+    }
 }
 
 void MainWindow::onActionGet()

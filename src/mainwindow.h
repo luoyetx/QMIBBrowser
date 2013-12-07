@@ -28,14 +28,6 @@ private:
     Ui::MainWindow *ui;
     RequestInfo *requestInfo;
     MIBTree *mibTree;
-    //MIBTable items
-    QLabel *tableItemName;
-    QLabel *tableItemOid;
-    QLabel *tableItemSyntax;
-    QLabel *tableItemAccess;
-    QLabel *tableItemStatus;
-    QLabel *tableItemIndex;
-    QLabel *tableItemDescr;
     //Request *request;
 
     /*initial Class*/
@@ -77,6 +69,7 @@ private slots:
     void loadMIB();
     /**/
     void onTreeItemClicked(QTreeWidgetItem *node);
+    void onResultTableClicked(int row, int column);
     /*Actions*/
     void onActionGet();
     void onActionGetNext();
