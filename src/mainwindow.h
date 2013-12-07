@@ -70,6 +70,7 @@ private slots:
     /**/
     void onTreeItemClicked(QTreeWidgetItem *node);
     void onResultTableClicked(int row, int column);
+    void resultTableDetail(int row, int column);
     /*Actions*/
     void onActionGet();
     void onActionGetNext();

@@ -6,6 +6,7 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "resultdetaildialog.h"
 #include "advancedoptiondialog.h"
 #include "setrequestdialog.h"
 
@@ -148,6 +149,7 @@ void MainWindow::initialConnections()
     //TODO
     /*ResultTable*/
     connect(ui->resultTableWidget, SIGNAL(cellClicked(int,int)), this, SLOT(onResultTableClicked(int,int)));
+    connect(ui->resultTableWidget, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(resultTableDetail(int,int)));
     /*connect MIBTree*/
     connect(ui->MIBTreeWidget, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(onTreeItemClicked(QTreeWidgetItem*)));
     /*connect quick actions*/
@@ -488,13 +490,24 @@ void MainWindow::onTreeItemClicked(QTreeWidgetItem *node)
 
 void MainWindow::onResultTableClicked(int row, int column)
 {
-    QTableWidgetItem *rv = ui->resultTableWidget->item(row, column);
+    QTableWidgetItem *rv = ui->resultTableWidget->item(row, 0);
     QString oid = rv->text();
     MIBNode *node;
     node = mibTree->getNodeByName(oid.left(oid.indexOf('.')));
     if (node != NULL) {
         ui->OidLineEdit->setText(node->oid+oid.mid(oid.indexOf('.')));
     }
+}
+
+void MainWindow::resultTableDetail(int row, int column)
+{
+    QString name, type, value;
+    name = ui->resultTableWidget->item(row, 0)->text();
+    type = ui->resultTableWidget->item(row, 1)->text();
+    value = ui->resultTableWidget->item(row, 2)->text();
+    ResultDetailDialog *dialog = new ResultDetailDialog(name, type, value, this);
+    dialog->exec();
+    delete dialog;
 }
 
 void MainWindow::onActionGet()

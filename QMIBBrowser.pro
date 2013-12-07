@@ -17,7 +17,8 @@ HEADERS += \
     src/advancedoptiondialog.h \
     src/common.h \
     src/setrequestdialog.h \
-    src/mibtree.h
+    src/mibtree.h \
+    src/resultdetaildialog.h
 
 SOURCES += \
     src/mainwindow.cpp \
@@ -26,7 +27,8 @@ SOURCES += \
     src/advancedoptiondialog.cpp \
     src/setrequestdialog.cpp \
     src/mibtree.cpp \
-    src/common.cpp
+    src/common.cpp \
+    src/resultdetaildialog.cpp
 
 INCLUDEPATH += $$PWD/includes
 
@@ -43,6 +45,7 @@ FORMS += \
     ui/mainwindow.ui \
     ui/advancedoptiondialog.ui \
     ui/setrequestdialog.ui \
+    ui/resultdetaildialog.ui
 
 RESOURCES += \
     resource/resource.qrc
