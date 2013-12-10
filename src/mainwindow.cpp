@@ -147,6 +147,7 @@ void MainWindow::initialConnections()
     /*connect actions*/
     connect(ui->actionClear, SIGNAL(triggered()), this, SLOT(resetResultTableWidget()));
     connect(ui->actionLoad_MIB, SIGNAL(triggered()), this, SLOT(loadMIB()));
+    connect(this, SIGNAL(statusBarUpdate(QString)), ui->statusBar, SLOT(showMessage(QString)));
     //TODO
     /*ResultTable*/
     connect(ui->resultTableWidget, SIGNAL(cellClicked(int,int)), this, SLOT(onResultTableClicked(int,int)));
@@ -171,6 +172,9 @@ Status MainWindow::setUpRequest(Operation operation, Request *request)
 {
     qDebug() << "---------Setup Request " << operation << " ---------------";
     Status status;
+
+    /*Update status Bar*/
+    emit statusBarUpdate("Setup Request");
 
     /*Set Operation*/
     request->operation = operation;
@@ -224,6 +228,9 @@ Status MainWindow::setUpRequest(Operation operation, Request *request)
     qDebug() << "Request community:     " << request->community.c_str();
     qDebug() << "}";
     qDebug() << "########################################################";
+
+    if (status == Status_SUCCESS)
+        emit statusBarUpdate("Setup Request Successfully");
     return status;
 }
 
@@ -235,6 +242,7 @@ Status MainWindow::setUpRequestGet(Request *request)
     oid = requestInfo->oid.toStdString();
     //oid should be set
     if (oid == "") {
+        emit statusBarUpdate("Setup Request Failed");
         Helper::pop("Warning", "Oid should be set");
         return Status_FAILED;
     }
@@ -250,6 +258,7 @@ Status MainWindow::setUpRequestGetNext(Request *request)
     oid = requestInfo->oid.toStdString();
     //oid should be set
     if (oid == "") {
+        emit statusBarUpdate("Setup Request Failed");
         Helper::pop("Warning", "Oid should be set");
         return Status_FAILED;
     }
@@ -265,12 +274,14 @@ Status MainWindow::setUpRequestSet(Request *request)
     oid = requestInfo->oid.toStdString();
     //oid should be set
     if (oid == "") {
+        emit statusBarUpdate("Setup Request Failed");
         Helper::pop("Warning", "Oid should be set");
         return Status_FAILED;
     }
     request->data.set_oid(Oid(oid.c_str()));
     MIBNode *node = mibTree->getNodeByOid(requestInfo->oid);
     if (node == NULL) {
+        emit statusBarUpdate("Setup Request Failed");
         Helper::pop("Warning", "Wrong Oid");
         return Status_FAILED;
     }
@@ -279,6 +290,7 @@ Status MainWindow::setUpRequestSet(Request *request)
     dialog->exec();
     if (dialog->cancel) {
         /*Cancel PushButton Clicked*/
+        emit statusBarUpdate("Setup Request Failed");
         delete dialog;
         return Status_FAILED;
     }
@@ -300,6 +312,7 @@ Status MainWindow::checkRequest(Request *request)
     /*Check address*/
     if (!request->address.valid()) {
         /*error*/
+        emit statusBarUpdate("Setup Request Failed");
         Helper::pop("Warning", "Wrong IP Address");
         return Status_FAILED;
     }
@@ -307,6 +320,7 @@ Status MainWindow::checkRequest(Request *request)
     Oid oid;
     request->data.get_oid(oid);
     if (oid=="") {
+        emit statusBarUpdate("Setup Request Failed");
         Helper::pop("Warning", "Oid should be set");
         return Status_FAILED;
     }
@@ -320,6 +334,7 @@ Status MainWindow::checkRequest(Request *request)
     case OperationSet:
         /*value shoudn't be null(including OID)*/
         if (!request->data.valid()) {
+            emit statusBarUpdate("Setup Request Failed");
             Helper::pop("Warning", "Value Should be set");
             return Status_FAILED;
         }
@@ -341,9 +356,11 @@ void MainWindow::handleRequest(Operation operation, Request *request)
     status = setUpRequest(operation, request);
     if (status == Status_SUCCESS) {
         /*Setup Request Correctly and Prepare to Send Request*/
+        emit statusBarUpdate("Sending Request");
         status = SnmpManager::handleOperation(request);
         if (status == Status_SUCCESS) {
             /*Handle Request Successfully*/
+            emit statusBarUpdate("Request Success");
             if (request->operation != OperationSet) {
                 /*Update ResultTableWidget*/
                 qDebug() << ">>>>>>>>>>>>>Insert Items to ResultTableWidget<<<<<<<<<<<";
@@ -378,6 +395,7 @@ void MainWindow::handleRequest(Operation operation, Request *request)
         }
         else {
             /*Handle Reuqest Error*/
+            emit statusBarUpdate("Request Fail");
             qDebug() << "Handle Requeset Error";
         }
     }

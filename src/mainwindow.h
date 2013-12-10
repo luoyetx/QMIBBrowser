@@ -54,6 +54,9 @@ private:
     /*Check the Request Valid or Not*/
     Status checkRequest(Request *request);
 
+signals:
+    void statusBarUpdate(QString messages);
+
 public slots:
     /*connection with AdvancedOptionDialog*/
     void updateRequestInfo(RequestInfo *requestInfo);
