@@ -48,7 +48,7 @@ void MainWindow::initialRequestInfo(RequestInfo *requestInfo)
 
 void MainWindow::initialWidgets()
 {
-    ui->OidLineEdit->setReadOnly(true);
+    //ui->OidLineEdit->setReadOnly(true);
     initialMIBTreeWidget(ui->MIBTreeWidget);
     initialMIBTableWidget(ui->MIBTableWidget);
     initialResultTableWidget(ui->resultTableWidget);
@@ -383,8 +383,16 @@ void MainWindow::handleRequest(Operation operation, Request *request)
 
                 rv = mibTree->getNodeByOid(oid);
                 itemValue->setText(request->data.get_printable_value());
-                itemType->setText(rv->syntax);
-                itemOid->setText(rv->name+pos);
+                if (rv != NULL) {
+                    //find node in mib tree
+                    itemType->setText(rv->syntax);
+                    itemOid->setText(rv->name+pos);
+                }
+                else {
+                    //not find node in mib tree
+                    itemType->setText("Unkown Type");
+                    itemOid->setText(request->data.get_printable_oid());
+                }
                 itemValue->setToolTip(itemValue->text());
                 ui->resultTableWidget->setItem(row, 0, itemOid);
                 ui->resultTableWidget->setItem(row, 1, itemType);
