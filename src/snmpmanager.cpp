@@ -32,7 +32,7 @@ Status SnmpManager::handleOperationGet(Request *request)
         /*Setup SNMP FAILED*/
         Helper::log(0, "RequestGet Failed");
         Helper::log(1, snmp.error_msg(status));
-        Helper::pop("Error", "RequestGet Failed");
+        Helper::pop("Error", snmp.error_msg(status));
         Snmp::socket_cleanup();
         return Status_FAILED;
     }
@@ -56,7 +56,7 @@ Status SnmpManager::handleOperationGet(Request *request)
         /*GetRequest FAILED*/
         Helper::log(0, "RequestGet Failed");
         Helper::log(1, snmp.error_msg(status));
-        Helper::pop("Error", "RequestGet Failed");
+        Helper::pop("Error", snmp.error_msg(status));
         Snmp::socket_cleanup();
         return Status_FAILED;
     }
@@ -78,7 +78,7 @@ Status SnmpManager::handleOperationGetNext(Request *request)
         /*Setup SNMP FAILED*/
         Helper::log(0, "RequestGetNext Failed");
         Helper::log(1, snmp.error_msg(status));
-        Helper::pop("Error", "RequestGetNext Failed");
+        Helper::pop("Error", snmp.error_msg(status));
         Snmp::socket_cleanup();
         return Status_FAILED;
     }
@@ -102,7 +102,7 @@ Status SnmpManager::handleOperationGetNext(Request *request)
         /*GetNextRequest FAILED*/
         Helper::log(0, "RequestGetNext Failed");
         Helper::log(1, snmp.error_msg(status));
-        Helper::pop("Error", "RequestGetNext Failed");
+        Helper::pop("Error", snmp.error_msg(status));
         Snmp::socket_cleanup();
         return Status_FAILED;
     }
@@ -124,7 +124,7 @@ Status SnmpManager::handleOperationSet(Request *request)
         /*Setup SNMP FAILED*/
         Helper::log(0, "RequestSet Failed");
         Helper::log(1, snmp.error_msg(status));
-        Helper::pop("Error", "RequestSet Failed");
+        Helper::pop("Error", snmp.error_msg(status));
         Snmp::socket_cleanup();
         return Status_FAILED;
     }
@@ -134,7 +134,7 @@ Status SnmpManager::handleOperationSet(Request *request)
     ctarget.set_retry(request->retry);
     ctarget.set_timeout(request->timeout);
     ctarget.set_version(request->version);
-    ctarget.set_readcommunity(request->community.c_str());
+    ctarget.set_writecommunity(request->community.c_str());
     SnmpTarget *target = &ctarget;
     status = snmp.set(pdu, *target);
     if (status == SNMP_CLASS_SUCCESS) {
@@ -146,7 +146,7 @@ Status SnmpManager::handleOperationSet(Request *request)
         /*SetRequest FAILED*/
         Helper::log(0, "RequestSet Failed");
         Helper::log(1, snmp.error_msg(status));
-        Helper::pop("Error", "RequestSet Failed");
+        Helper::pop("Error", snmp.error_msg(status));
         Snmp::socket_cleanup();
         return Status_FAILED;
     }
